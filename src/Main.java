@@ -1,5 +1,6 @@
 import java.util.logging.*;
 import java.util.ArrayList;
+import java.util.Collections;
 public class Main {
 
     static int pass=0;
@@ -15,7 +16,7 @@ public class Main {
         testSuccessor1();
         testMinimum1();
         testDeleteHelpers();
-        testDeleteMany();
+        // testDeleteMany();
 
         Node fe = new Node(3);
         if(testConstructor()) pass++;
@@ -40,10 +41,76 @@ public class Main {
     }
 
     private static void testDeleteMany() {
-        testScrubParent();
-        testSpliceOut();
-        testRotateOut();
-        testSpliceOutTwoIters();
+        
+    }
+
+    private static void testScrubParent() {
+        BinaryTree bt = new BinaryTree();
+        ArrayList<Integer> expected = new ArrayList<>();
+        int testSize = 5;
+        for(int i =0; i < testSize; i++) {
+            Node n = new Node(i);
+            bt.insert(n);
+            expected.add(i);
+        }
+
+        for(int i = testSize - 1; i >= 0; i--) {
+            expected.remove(Integer.valueOf(i));
+            bt.scrubParent(bt.search(i));
+            ArrayList<Integer> actual = sortedKeyArrayList(bt.getRoot());
+            if(actual.equals(expected)) pass++;
+            else {
+                fail++;
+                LOGGER.log(Level.WARNING, "Failed testScrubParent: expected " + expected + ", got " + actual);
+            }
+
+        }
+    }
+
+    private static void testSpliceOut() {
+        BinaryTree bt = new BinaryTree();
+        ArrayList<Integer> expected = new ArrayList<>();
+        for(int i = 0; i < 5; i++) {
+            Node n = new Node(i);
+            bt.insert(n);
+            expected.add(i);
+        }
+        bt.spliceOut(bt.search(4));
+        expected.remove(Integer.valueOf(4));
+        bt.spliceOut(bt.search(2));
+        expected.remove(Integer.valueOf(2));
+
+        ArrayList<Integer> actual = sortedKeyArrayList(bt.getRoot());
+
+        if(expected.equals(actual)) pass++;
+        else {
+            LOGGER.log(Level.WARNING, "Failed testSpliceOut: expected " + expected + " got " + actual);
+        }
+    }
+
+    private static void testRotateOut() {
+        BinaryTree bt = new BinaryTree();
+        ArrayList<Integer> expected = new ArrayList<>();
+        int testSize = 64;
+        for(int start = testSize; start > 0; start = start/2) {
+            for(int key = start; key < 2*testSize; key+= 2*start) {
+                Node n = new Node(key);
+                bt.insert(n);
+                expected.add(key);
+            }
+        }
+        for(int i = 2; i < 2*testSize; i*=2) {
+            bt.rotateOut(bt.search(i));
+            ArrayList<Integer> actual = sortedKeyArrayList(bt.getRoot());
+            Collections.sort(actual);
+            Collections.sort(expected);
+            expected.remove(Integer.valueOf(i));
+            if(actual.equals(expected)) pass++;
+            else {
+                fail++;
+                LOGGER.log(Level.WARNING, "Failed testRotateOut: expected " + expected + ", got " + actual);
+            }
+        }
     }
 
     private static void testSpliceOutTwoIters() {
@@ -54,13 +121,17 @@ public class Main {
         bt.insert(one);
         bt.spliceOut(zero);
         bt.spliceOut(one);
-        if(bt.root == null) pass++;
+        if(bt.getRoot() == null) pass++;
         else {
             LOGGER.log(Level.WARNING, "Failed testSpliceOutTwoIters: expected an empty tree, got " + bt);
         }
     }
 
     private static void testDeleteHelpers() {
+        testScrubParent();
+        testSpliceOut();
+        testRotateOut();
+        testSpliceOutTwoIters();
     }
 
     public static void testFindInsert1() {
@@ -235,9 +306,9 @@ public class Main {
      */
     public static ArrayList<Integer> sortedKeyArrayList(Node thisNode) {
         ArrayList<Integer> retval = new ArrayList<Integer>();
+        if(thisNode == null) return retval;
         Node lchild = thisNode.getLChild();
         Node rchild = thisNode.getRChild();
-
         if(lchild != null) retval.addAll(sortedKeyArrayList(lchild));
         retval.add(thisNode.getKey());
         if(rchild != null) retval.addAll(sortedKeyArrayList(rchild));

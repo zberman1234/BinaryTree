@@ -3,8 +3,9 @@ public class BinaryTree {
     Node root;
 
 
-    public void newInsert(Node newNode) {
-
+    
+    public Node getRoot() {
+        return root;
     }
 
     /**
