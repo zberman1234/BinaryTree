@@ -11,4 +11,4 @@ Deletion is handled by three important helper methods: deletion by removing pare
 Testing involves a mix of automated and manual tests, the majority of which concern the functionality of deletion and its various helper methods.
 
 ### Acknowledgements
-Authored by Zach Berman, adopted, and sometimes directly copied from Mr. Kuszmaul's youtube (https://www.youtube.com/playlist?list=PLxcs8YW55pqo808FdMdSOTi5-JGJrr2iS).
+Authored by Zach Berman, adapted, and sometimes directly copied from Mr. Kuszmaul's youtube (https://www.youtube.com/playlist?list=PLxcs8YW55pqo808FdMdSOTi5-JGJrr2iS).
