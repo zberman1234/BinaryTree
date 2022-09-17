@@ -2,7 +2,6 @@ public class BinaryTree {
 
     Node root;
 
-
     
     public Node getRoot() {
         return root;
@@ -49,8 +48,8 @@ public class BinaryTree {
         if(newParent == null) root = newNode;
         else {
             newNode.setParent(newParent);
-            if(newParent.getKey() < newNode.getKey()) newParent.setRChild(newNode);
-            else newParent.setLChild(newNode);
+            if(newParent.getKey() > newNode.getKey()) newParent.setLChild(newNode);
+            else newParent.setRChild(newNode);
         }
     }
 
@@ -77,12 +76,23 @@ public class BinaryTree {
      * @return the Node with the given key
      */
     public Node search(int key) {
+        return rsearch(root, key);
+    }
 
-        Node x = root;
+    /**
+     * Recursive search
+     * @param x starting search node
+     * @param key key being searched for
+     * @return the Node with the given key
+     */
+    public Node rsearch(Node x, int key) {
 
-        while(x!=null && x.getKey() != key) {
-            if(key < x.getKey()) x = x.getLChild();
-            else x = x.getRChild();
+        if(x!=null && x.getKey() != key) {
+            if(key < x.getKey()) 
+                return rsearch(x.getLChild(), key);
+            else {
+                return rsearch(x.getRChild(), key);
+            }
         }
 
         return x;
@@ -112,21 +122,8 @@ public class BinaryTree {
         }
     }
 
-    public Node rsearch(Node x, int key) {
 
-        while(x!=null && x.getKey() != key) {
-            if(key < x.getKey()) x = x.getLChild();
-            else x = x.getRChild();
-        }
-
-        return x;
-    }
-
-    /**
-     * Inserts a new Node at the root of the list
-     * @param e the Node to be inserted
-     */
-    public void OldInsert(Node e) {
+    public void OldInsert(Node e) {//defunct
         // Stack behavior
         e.setLChild(root);
         if(root != null) {

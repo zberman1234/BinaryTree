@@ -16,7 +16,7 @@ public class Main {
         testSuccessor1();
         testMinimum1();
         testDeleteHelpers();
-        // testDeleteMany();
+        testDeleteMany();
 
         Node fe = new Node(3);
         if(testConstructor()) pass++;
@@ -40,10 +40,39 @@ public class Main {
         System.out.println("Passes: " + pass + "Fails: " + fail);
     }
 
+    /**
+     * Tests general deletion of all Nodes of a randomly generated binary tree
+     */
     private static void testDeleteMany() {
-        
+        BinaryTree bt = new BinaryTree();
+        ArrayList<Integer> expected = new ArrayList<Integer>();
+        int testSize = 64;
+        for(int i = 0; i < testSize; i++) {
+            int key = (int) (testSize*Math.random());
+            Node n = new Node(key);
+            bt.insert(n);
+            expected.add(key);
+        }
+        Collections.sort(expected);
+        System.out.println(expected);
+        System.out.println(sortedKeyArrayList(bt.getRoot()));
+        for(int i = 0; i < testSize; i++) {
+            int remVal = expected.remove(0);
+            Node rem = bt.search(remVal);
+            bt.delete(rem);
+            ArrayList<Integer> actual = sortedKeyArrayList(bt.getRoot());
+            if(actual.equals(expected)) pass++;
+            else {
+                fail++;
+                LOGGER.log(Level.WARNING, "Failed testDeleteMany: expected " + expected + ", got " + actual);
+            }
+
+        }
     }
 
+    /**
+     * Tests scrub parent by constructing a 0,1,2,3,4 binary tree and then deconstructing it exclusively using scrubParent
+     */
     private static void testScrubParent() {
         BinaryTree bt = new BinaryTree();
         ArrayList<Integer> expected = new ArrayList<>();
@@ -67,6 +96,9 @@ public class Main {
         }
     }
 
+    /**
+     * Tests splice out by creating a 0,1,2,3,4 binary tree, splicing two middle Nodes and then checking if they were actually removed and the list looks as it should
+     */
     private static void testSpliceOut() {
         BinaryTree bt = new BinaryTree();
         ArrayList<Integer> expected = new ArrayList<>();
@@ -88,6 +120,10 @@ public class Main {
         }
     }
 
+    /**
+     * Tests rotateOut by generating a binary tree intentionally so that Nodes with power of 2 keys will always have to children, 
+     * and thus always need to be rotated out to be deleted
+     */
     private static void testRotateOut() {
         BinaryTree bt = new BinaryTree();
         ArrayList<Integer> expected = new ArrayList<>();
@@ -113,6 +149,9 @@ public class Main {
         }
     }
 
+    /**
+     * tests spliceOut by creating a two node list, splicing out both nodes and confirming that the list is null
+     */
     private static void testSpliceOutTwoIters() {
         BinaryTree bt = new BinaryTree();
         Node zero = new Node(0);
@@ -127,6 +166,7 @@ public class Main {
         }
     }
 
+    //calls 4 delete helper tests
     private static void testDeleteHelpers() {
         testScrubParent();
         testSpliceOut();
@@ -134,6 +174,10 @@ public class Main {
         testSpliceOutTwoIters();
     }
 
+    /**
+     * tests findInsertionNode by creating a binary tree where we know where a new element should be inserted,
+     * and then confirming that that is where findInsertionNode suggests to put it
+     */
     public static void testFindInsert1() {
         BinaryTree bt = new BinaryTree();
         Node one = new Node(1);
@@ -162,6 +206,7 @@ public class Main {
         }
     }
 
+    //same theory as testFindInsertion1
     public static void testFindInsert2() {
         BinaryTree bt = new BinaryTree();
         Node one = new Node(3);
@@ -312,7 +357,6 @@ public class Main {
         if(lchild != null) retval.addAll(sortedKeyArrayList(lchild));
         retval.add(thisNode.getKey());
         if(rchild != null) retval.addAll(sortedKeyArrayList(rchild));
-
         return retval;
     }
 }
