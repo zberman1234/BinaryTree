@@ -1,4 +1,5 @@
 import java.util.logging.*;
+import java.util.ArrayList;
 public class Main {
 
     static int pass=0;
@@ -13,6 +14,8 @@ public class Main {
         testFindInsert2();
         testSuccessor1();
         testMinimum1();
+        testDeleteHelpers();
+        testDeleteMany();
 
         Node fe = new Node(3);
         if(testConstructor()) pass++;
@@ -34,6 +37,30 @@ public class Main {
 
 
         System.out.println("Passes: " + pass + "Fails: " + fail);
+    }
+
+    private static void testDeleteMany() {
+        testScrubParent();
+        testSpliceOut();
+        testRotateOut();
+        testSpliceOutTwoIters();
+    }
+
+    private static void testSpliceOutTwoIters() {
+        BinaryTree bt = new BinaryTree();
+        Node zero = new Node(0);
+        Node one = new Node(1);
+        bt.insert(zero);
+        bt.insert(one);
+        bt.spliceOut(zero);
+        bt.spliceOut(one);
+        if(bt.root == null) pass++;
+        else {
+            LOGGER.log(Level.WARNING, "Failed testSpliceOutTwoIters: expected an empty tree, got " + bt);
+        }
+    }
+
+    private static void testDeleteHelpers() {
     }
 
     public static void testFindInsert1() {
@@ -139,8 +166,7 @@ public class Main {
     }
 
     /**
-     * 
-     * @return
+     * Tests the minimum Node class method in a tree with two nodes, logs whether min found the correct min Node
      */
     public static void testMinimum1() {
         BinaryTree fl = new BinaryTree();
@@ -200,5 +226,22 @@ public class Main {
     public static boolean testConstructor() {
         Node fe = new Node(3);
         return fe.getKey() == 3;
+    }
+
+    /**
+     * Same structure as Node.stringWalk(), but stores elements in array, not string
+     * @param thisNode the starting node
+     * @return an arraylist with thisNode and all its children, with left children lineage in the beginning, node in the middle, and right lineage at the end
+     */
+    public static ArrayList<Integer> sortedKeyArrayList(Node thisNode) {
+        ArrayList<Integer> retval = new ArrayList<Integer>();
+        Node lchild = thisNode.getLChild();
+        Node rchild = thisNode.getRChild();
+
+        if(lchild != null) retval.addAll(sortedKeyArrayList(lchild));
+        retval.add(thisNode.getKey());
+        if(rchild != null) retval.addAll(sortedKeyArrayList(rchild));
+
+        return retval;
     }
 }
