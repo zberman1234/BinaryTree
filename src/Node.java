@@ -45,6 +45,10 @@ public class Node {
         return out;
     }
 
+    /**
+     * 
+     * @return
+     */
     public Node successor() {
         Node retval = this;
         if(retval.rchild != null) {
